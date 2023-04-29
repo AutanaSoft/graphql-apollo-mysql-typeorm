@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="d0e02021-7faa-4bf9-9476-0533dc6f3217" name="API AirDashboard" url="https://api.airdashboard.net">
+        <fileTransfer rootFolder="/home/airdashboard" accessType="SFTP" host="airdashboard.net" port="22" sshConfigId="e928b73f-b2a8-4cb8-b2fe-ae69671452ed" sshConfig="airdashboard@airdashboard.net:22 key" keyPair="true">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" keepAliveTimeout="0" passiveMode="true" shareSSLContext="true" isUseRsync="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>
