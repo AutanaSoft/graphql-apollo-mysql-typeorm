@@ -1,13 +1,13 @@
 import { Users } from '../../entities'
 import { connectToMysql } from '../../index'
-import { encrypt, authUtil } from '../../../util'
+import { bcryptjsUtils, jwtUtils } from '../../../core/utils'
 import { GraphQLError } from 'graphql/error'
 
 export const AuthTypeDefs = `#graphql
 type Auth {
     token: String
-    createdAt: String
-    expiresAt: String
+    created_at: String
+    expires_at: String
 }
 
 type Query {
@@ -15,31 +15,25 @@ type Query {
 }
 `
 export const AuthResolvers = {
-  Query: {
-    userLogin: async (parent, { email, password }) => {
-      const query = await connectToMysql
-        .getRepository(Users)
-        .createQueryBuilder('user')
-        .where('user.email = :email', { email })
-        .getOne()
+    Query: {
+        userLogin: async (parent, { email, password }) => {
+            const query = await connectToMysql
+                .getRepository(Users)
+                .createQueryBuilder('user')
+                .where('user.email = :email', { email })
+                .getOne()
 
-      const isPasswordValid = await encrypt.compare(password, query.password)
+            const isPasswordValid = await bcryptjsUtils.compare(password, query.password)
 
-      if (!isPasswordValid) {
-        throw new GraphQLError('Invalid User or Password', {
-          extensions: {
-            code: 'INVALID_USER_OR_PASSWORD'
-          }
-        })
-      }
-      const { id, roles, status } = query
-      const token = authUtil.generateToken({ user: { id, roles, status, email } })
-      const { iat: createdAt, exp: expiresAt } = authUtil.verifyToken(token)
-      return {
-        token,
-        createdAt,
-        expiresAt
-      }
+            if (!isPasswordValid) {
+                throw new GraphQLError('Invalid User or Password', {
+                    extensions: {
+                        code: 'INVALID_USER_OR_PASSWORD'
+                    }
+                })
+            }
+            const { id, roles, status } = query
+            return jwtUtils.generateToken({ id, roles, status, email })
+        }
     }
-  }
 }

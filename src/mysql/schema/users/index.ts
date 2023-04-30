@@ -1,5 +1,5 @@
 import { Users } from '../../entities'
-import { encrypt } from '../../../util'
+import { bcryptjsUtils } from '../../../core/utils'
 
 export const usersTypeDefs = `#graphql
 type User {
@@ -40,22 +40,21 @@ type Mutation {
 }`
 
 export const usersResolvers = {
-  Query: {
-    getUser: (parent, args) => {
-      return Users.findOne({ where: { id: args.id } })
+    Query: {
+        getUser: (parent, args) => {
+            return Users.findOne({ where: { id: args.id } })
+        },
+        getUserByEmail: async (_root, { email }, context) => {
+            const user = await Users.findOne({ where: { email } })
+            return user
+        }
     },
-    getUserByEmail: async (_root, { email }, context) => {
-      console.log('context', context)
-      const user = await Users.findOne({ where: { email } })
-      return user
-    }
-  },
 
-  Mutation: {
-    createUser: async (parent, args) => {
-      args.password = await encrypt.encrypt(args.password)
-      const user = await Users.insert(args)
-      return user.generatedMaps[0]
+    Mutation: {
+        createUser: async (parent, args) => {
+            args.password = await bcryptjsUtils.encrypt(args.password)
+            const user = await Users.insert(args)
+            return user.generatedMaps[0]
+        }
     }
-  }
 }

@@ -1,24 +1,24 @@
 import { Timestamp } from 'typeorm'
 
 export type User = {
-  id: string
-  roles: string
-  status: string
-  email: string
-  name: string
-  country: string
-  phone: string
-  telegram: string
-  password: string
-  created_at: Timestamp
-  updated_at: Timestamp
+    id: string
+    roles: string
+    status: string
+    email: string
+    name: string
+    country: string
+    phone: string
+    telegram: string
+    password: string
+    created_at: Timestamp
+    updated_at: Timestamp
 }
 
 export type UserLogin = {
-  token?: string
-  created_at: Timestamp
-  expires_at: Timestamp
-  updated_at: Timestamp
+    token?: string
+    created_at: Timestamp
+    expires_at: Timestamp
+    updated_at: Timestamp
 }
 
 export const usersTypeDefs = `#graphql
