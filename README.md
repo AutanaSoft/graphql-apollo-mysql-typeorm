@@ -7,17 +7,12 @@ Basic API configuration using Apollo Server, GraphQL, MySQL with TypeScript
 ```bash
 npm i
 ```
-
 ## Start
-
-Ejecuta:
 
 ```bash
 npm start
 ```
 ## Build
-
-Ejecuta:
 
 ```bash
 npm run build
