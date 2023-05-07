@@ -1,18 +1,25 @@
 {
-    "name": "res-api",
+    "name": "graphql-apollo-mysql-typeorm",
     "version": "1.0.0",
-    "description": "",
+    "description": "GraphQL API with Apollo Server, MySQL, TypeScript, TypeORM, Express, JWT, Subscriptions",
     "main": "./dist/app.js",
-    "type": "module",
+    "author": "AutanaSoft",
+    "license": "ISC",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/AutanaSoft/graphql-apollo-mysql-typeorm.git"
+    },
+    "homepage": "https://github.com/AutanaSoft/graphql-apollo-mysql-typeorm#readme",
+    "bugs": {
+        "url": "https://github.com/AutanaSoft/graphql-apollo-mysql-typeorm.git"
+    },
     "scripts": {
         "start": "nodemon ./src/app.ts",
-        "build": "tsc -P .",
+        "dev": "ts-node ./src/app.ts",
+        "build": "tsc -P . && node ./dist/app.js",
         "lint": "eslint --ignore-path .eslintignore --ext .js,.ts .",
         "format": "prettier --ignore-path .gitignore --write \"**/*.+(js|ts|json)\""
     },
-    "keywords": [],
-    "author": "",
-    "license": "ISC",
     "dependencies": {
         "@apollo/server": "^4.7.0",
         "@graphql-tools/schema": "^9.0.19",
@@ -27,6 +34,7 @@
         "graphql-ws": "^5.12.1",
         "jsonwebtoken": "^9.0.0",
         "mysql2": "^3.2.4",
+        "reflect-metadata": "^0.1.13",
         "typeorm": "^0.3.15",
         "ws": "^8.13.0"
     },
@@ -43,6 +51,20 @@
         "nodemon": "^2.0.22",
         "prettier": "^2.8.8",
         "ts-node": "^10.9.1",
+        "tsconfig-paths": "^4.2.0",
         "typescript": "^5.0.4"
-    }
+    },
+    "keywords": [
+        "nodejs",
+        "typescript",
+        "graphql",
+        "apollo",
+        "mysql",
+        "typeorm",
+        "express",
+        "auth",
+        "jwt",
+        "subscription",
+        "ws"
+    ]
 }
