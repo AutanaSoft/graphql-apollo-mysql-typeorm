@@ -47,7 +47,7 @@ extend type Mutation{
 
 export const GetUserResolvers = {
     Query: {
-        Me: async (parent, { id }, context) => {
+        Me: async (parent, args, context) => {
             return await UsersController.getUserWithProfile(context.user.id)
         },
         GetUsers: async (parent, args, context) => {

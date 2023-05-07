@@ -53,13 +53,3 @@ export const setDate = (option: SetDate) => {
     if (period === 'y') newDate.setFullYear(newDate.getFullYear() + Number(number))
     return newDate.toISOString()
 }
-
-/**
- * @param value string with the time to add in format '1m' (1 minute), '2h' (2 hours), '3d' (3 days), '4w' (4 weeks), '5M' (5 months), '6y' (6 years)
- * @returns Object with the number and the increment
- */
-const parseIncrement = (value: string): { number: number; increment: string } => {
-    const number = value.charAt(0)
-    const increment = value.charAt(1)
-    return { number: Number(number), increment }
-}

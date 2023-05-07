@@ -12,9 +12,8 @@ import { UserToken } from './core/models'
 import { dateUtils, token_utils } from './core/utils'
 import AppDataSource from './mysql/AppDataSource'
 import { schema } from './mysql/schema'
-import { wsService } from './ws'
-import { GraphQLError } from 'graphql'
 import { setGraphQLError } from './mysql/utils'
+import { wsService } from './ws'
 
 const app = express()
 const httpServer = createServer(app)
