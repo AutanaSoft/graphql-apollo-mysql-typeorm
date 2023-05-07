@@ -9,7 +9,7 @@ export type TokenType = {
     user: UserToken | null
     message?: string
     create_at: string
-    expired_at: string
+    expires_at: string
 }
 
 export type TokenResponse = {

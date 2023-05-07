@@ -1,44 +1,92 @@
-import { Timestamp } from 'typeorm'
+import { UsersRolesType } from '../../../core/models'
+import { UsersController } from '../../controllers'
+import { setGraphQLError } from '../../utils'
 
-export type User = {
-    id: string
-    roles: string
-    status: string
-    email: string
-    name: string
-    country: string
-    phone: string
-    telegram: string
-    password: string
-    created_at: Timestamp
-    updated_at: Timestamp
-}
-
-export type UserLogin = {
-    token?: string
-    created_at: Timestamp
-    expires_at: Timestamp
-    updated_at: Timestamp
-}
-
-export const usersTypeDefs = `#graphql
+export const GetUserTypeDefs = `#graphql
 type User {
-    id: String
-    roles: String
-    status: String
-    email: String
-    name: String
-    country: String
-    phone: String
-    telegram: String
-    password: String
-    created_at: String
-    updated_at: String
+    id: ID!
+    status: String!
+    roles: String!
+    email: String!
+    profile_id: String
+    created_at: String!
+    updated_at: String!
 }
 
-type UserLogin {
-    token: String
-    created_at: String
-    expires_at: String
-    updated_at: String
+type UserProfile {
+    id: String!
+    first_name: String!
+    last_name: String!
+    country: String!
+    phone: String!
+    telegram: String!
+    created_at: String!
+    updated_at: String!
+}
+
+type UserWithProfile {
+    id: ID!
+    status: String!
+    roles: String!
+    email: String!
+    profile: UserProfile
+    created_at: String!
+    updated_at: String!
+}
+
+extend type Query {
+    Me(id: ID): UserWithProfile
+    GetUsers(limit: Int, offset: Int): [User]!
+    GetUserById(id: ID!): User
+    GetUserByEmail(email: String!): User
+}
+
+extend type Mutation{
+    UpdateUserProfile(first_name: String!, last_name: String!, country: String!, phone: String!, telegram: String!): UserWithProfile
 }`
+
+export const GetUserResolvers = {
+    Query: {
+        Me: async (parent, { id }, context) => {
+            return await UsersController.getUserWithProfile(context.user.id)
+        },
+        GetUsers: async (parent, args, context) => {
+            //The user can only consult his own data
+            if (context.user.roles !== UsersRolesType.ADMIN) {
+                setGraphQLError(
+                    'You do not have permissions to perform this action',
+                    'forbidden',
+                    403
+                )
+            }
+            return await UsersController.getUsers()
+        },
+        GetUserById: async (parent, { id }, context) => {
+            //The user can only consult his own data
+            if (context.user.roles !== UsersRolesType.ADMIN && context.user.id !== id) {
+                setGraphQLError(
+                    'You do not have permissions to perform this action',
+                    'forbidden',
+                    403
+                )
+            }
+            return await UsersController.getUserById(id)
+        },
+        GetUserByEmail: async (parent, { email }, context) => {
+            //The user can only consult his own data
+            if (context.user.roles !== UsersRolesType.ADMIN && context.user.email !== email) {
+                setGraphQLError(
+                    'You do not have permissions to perform this action',
+                    'forbidden',
+                    403
+                )
+            }
+            return await UsersController.getUserByEmail(email)
+        }
+    },
+    Mutation: {
+        UpdateUserProfile: async (parent, args, context) => {
+            return await UsersController.updateUserProfile(context.user.id, args)
+        }
+    }
+}

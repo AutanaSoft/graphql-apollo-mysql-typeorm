@@ -41,14 +41,16 @@ type SetDate = {
  */
 export const setDate = (option: SetDate) => {
     const newDate = option.date ? new Date(option.date) : new Date()
-    const { number, increment } = parseIncrement(option.time)
 
-    if (increment === 'm') newDate.setMinutes(newDate.getMinutes() + number)
-    if (increment === 'h') newDate.setHours(newDate.getHours() + number)
-    if (increment === 'd') newDate.setDate(newDate.getDate() + number)
-    if (increment === 'w') newDate.setDate(newDate.getDate() + number * 7)
-    if (increment === 'M') newDate.setMonth(newDate.getMonth() + number)
-    if (increment === 'y') newDate.setFullYear(newDate.getFullYear() + number)
+    const { number, period } = (option.time.match(/^(?<number>\d{1,2})(?<period>[smhdwMy]{1})/s)
+        ?.groups as { number: string; period: string }) || { number: '0', period: 'm' }
+
+    if (period === 'm') newDate.setMinutes(newDate.getMinutes() + Number(number))
+    if (period === 'h') newDate.setHours(newDate.getHours() + Number(number))
+    if (period === 'd') newDate.setDate(newDate.getDate() + Number(number))
+    if (period === 'w') newDate.setDate(newDate.getDate() + Number(number) * 7)
+    if (period === 'M') newDate.setMonth(newDate.getMonth() + Number(number))
+    if (period === 'y') newDate.setFullYear(newDate.getFullYear() + Number(number))
     return newDate.toISOString()
 }
 

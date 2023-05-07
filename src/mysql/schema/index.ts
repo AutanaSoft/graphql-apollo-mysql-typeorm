@@ -1,8 +1,10 @@
-import { usersResolvers, usersTypeDefs } from './users'
 import { makeExecutableSchema } from '@graphql-tools/schema'
+import { PubSub } from 'graphql-subscriptions'
 import { AuthResolvers, AuthTypeDefs } from './auth'
+import { UsersResolvers, UsersTypeDefs } from './users'
 
-export const typeDefs = [AuthTypeDefs, usersTypeDefs]
-export const resolvers = [AuthResolvers, usersResolvers]
+export const pubsub = new PubSub()
+export const typeDefs = [...AuthTypeDefs, ...UsersTypeDefs]
+export const resolvers = [...AuthResolvers, ...UsersResolvers]
 
 export const schema = makeExecutableSchema({ typeDefs, resolvers })
