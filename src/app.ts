@@ -7,16 +7,13 @@ import express from 'express'
 import { Disposable } from 'graphql-ws'
 import { useServer } from 'graphql-ws/lib/use/ws'
 import { createServer } from 'http'
+import { WebSocketServer } from 'ws'
 import { APP_PATH, APP_PORT } from './core/environment/'
 import { UserToken } from './core/models'
 import { dateUtils, token_utils } from './core/utils'
 import AppDataSource from './mysql/AppDataSource'
 import { schema } from './mysql/schema'
 import { setGraphQLError } from './mysql/utils'
-import { wsService } from './ws'
-
-const app = express()
-const httpServer = createServer(app)
 
 type Context = {
     token: string | null
@@ -25,12 +22,39 @@ type Context = {
     expires_at: string | null
 }
 
-// Set up GraphQL-WS server.
-const wsServer = new wsService(httpServer).getWsServer()
+const app = express()
 
-const serverCleanup: Disposable = useServer({ schema }, wsServer)
+const httpServer = createServer(app)
 
-// Set up ApolloServer.
+const wsServer = new WebSocketServer({
+    server: httpServer,
+    path: APP_PATH
+})
+
+const getTokenUser = (_token: string) => {
+    const token = token_utils.getToken(_token)
+    const tokenData = token_utils.decodedToken(token)
+    return {
+        token,
+        ...tokenData
+    }
+}
+
+const serverCleanup: Disposable = useServer(
+    {
+        schema,
+        context: async (ctx) => {
+            return getTokenUser(ctx.connectionParams.Authorization as string)
+        },
+        onConnect: async (ctx) => {
+            console.log('onConnect')
+            const token = getTokenUser(ctx.connectionParams.Authorization as string)
+            if (!token.user) throw new Error('User is not authenticated')
+        }
+    },
+    wsServer
+)
+
 const server = new ApolloServer<Context>({
     schema,
     plugins: [
@@ -47,6 +71,8 @@ const server = new ApolloServer<Context>({
     ]
 })
 
+const noTokenNeeded = ['LoginUser', 'CreateUser', 'CheckIfEmailRegistered', 'IntrospectionQuery']
+
 const setMiddleware = () => {
     app.use(
         APP_PATH,
@@ -54,13 +80,7 @@ const setMiddleware = () => {
         bodyParser.json(),
         expressMiddleware(server, {
             context: async ({ req }) => {
-                // Si la operación es  LoginUser, CreateUser  no se necesita token.
-                if (
-                    req.body.operationName === 'LoginUser' ||
-                    req.body.operationName === 'CreateUser' ||
-                    req.body.operationName === 'CheckIfEmailRegistered' ||
-                    req.body.operationName === 'IntrospectionQuery'
-                ) {
+                if (noTokenNeeded.includes(req.body.operationName)) {
                     return {
                         token: null,
                         user: null,
@@ -68,23 +88,15 @@ const setMiddleware = () => {
                         expires_at: dateUtils.now()
                     }
                 }
-                // para el resto de las operaciones  se necesita token.
-                const token = token_utils.getToken(req.headers.authorization)
-                const tokenData = token_utils.decodedToken(token)
-
-                if (!tokenData.user) {
+                const token = getTokenUser(req.headers.authorization)
+                if (!token.user)
                     setGraphQLError('User is not authenticated', 'UNAUTHENTICATED', 401)
-                }
-                return {
-                    token,
-                    ...tokenData
-                }
+                return token
             }
         })
     )
 }
 
-//Set up MySQL connection.
 AppDataSource.initialize()
     .then(async () => {
         console.log(`🚀 MySQL connected successfully`)

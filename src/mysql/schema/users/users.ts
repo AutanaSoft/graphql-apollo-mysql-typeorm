@@ -34,14 +34,14 @@ type UserWithProfile {
     updated_at: String!
 }
 
-extend type Query {
+type Query {
     Me(id: ID): UserWithProfile
     GetUsers(limit: Int, offset: Int): [User]!
     GetUserById(id: ID!): User
     GetUserByEmail(email: String!): User
 }
 
-extend type Mutation{
+type Mutation{
     UpdateUserProfile(first_name: String!, last_name: String!, country: String!, phone: String!, telegram: String!): UserWithProfile
 }`
 

@@ -2,7 +2,7 @@ import { TokenResponse } from '../../../core/models'
 import { UsersController } from '../../controllers'
 
 export const LoginUserTypeDefs = `#graphql
-extend  type Query {
+type Query {
     LoginUser(email: String!, password: String!): TokenResponse
 }
 `
