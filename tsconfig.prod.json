@@ -1,0 +1,6 @@
+{
+    "extends": "./tsconfig.js",
+    "compilerOptions": {
+        "baseUrl": "dist"
+    }
+}

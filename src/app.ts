@@ -13,7 +13,7 @@ import { UserToken } from './core/models'
 import { dateUtils, token_utils } from './core/utils'
 import AppDataSource from './mysql/AppDataSource'
 import { schema } from './mysql/schema'
-import { setGraphQLError } from './mysql/utils'
+import { setGraphQLError } from '@/mysql/utils'
 
 type Context = {
     token: string | null
