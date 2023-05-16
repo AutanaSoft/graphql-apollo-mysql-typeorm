@@ -1,6 +1,6 @@
+import { Profiles, Users } from '@/mysql/entities'
 import { Repository } from 'typeorm'
 import AppDataSource from '../AppDataSource'
-import { Profiles, Users } from '../entities'
 import { setGraphQLError } from '../utils'
 
 class usersController {

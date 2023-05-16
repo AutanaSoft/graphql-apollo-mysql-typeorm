@@ -1,2 +1,2 @@
-export * from './Users'
-export * from './Profiles'
+export * from './users.entity'
+export * from './profiles.entity'

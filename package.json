@@ -15,13 +15,17 @@
     },
     "scripts": {
         "dev": "nodemon ./src/app.ts",
-        "build": "tsc --project tsconfig.prod.json -P .",
+        "build": "tsc -P .",
         "start": "node -r ts-node/register/transpile-only -r tsconfig-paths/register ./dist/app.js",
-        "start:dos": "node -r tsconfig-paths/register dist/app.js",
+        "start:dos": "TS_NODE_BASEURL=./dist node -r tsconfig-paths/register dist/app.js",
         "clean": "rm -rf dist/**/*.js dist/**/*.map",
         "clean:all": "rm -r dist/**",
         "lint": "eslint --ignore-path .eslintignore --ext .js,.ts .",
-        "format": "prettier --ignore-path .gitignore --write \"**/*.+(js|ts|json)\""
+        "format": "prettier --ignore-path .gitignore --write \"**/*.+(js|ts|json)\"",
+        "typeorm": "typeorm-ts-node-esm",
+        "migration:generate": "npm run typeorm -- -d ./src/mysql/AppDataSource.ts migration:generate",
+        "migration:run": "npm run typeorm -- -d ./src/mysql/AppDataSource.ts migration:run",
+        "entity:create": "npm run typeorm -- entity:create"
     },
     "dependencies": {
         "@apollo/server": "^4.7.0",

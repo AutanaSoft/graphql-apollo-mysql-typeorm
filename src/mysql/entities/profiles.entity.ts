@@ -1,5 +1,4 @@
 import {
-    BaseEntity,
     Column,
     CreateDateColumn,
     Entity,
@@ -8,10 +7,10 @@ import {
     Timestamp,
     UpdateDateColumn
 } from 'typeorm'
-import { Users } from './Users'
+import { Users } from '@/mysql/entities/users.entity'
 
 @Entity()
-export class Profiles extends BaseEntity {
+export class Profiles {
     @PrimaryGeneratedColumn('uuid')
     id: string
 

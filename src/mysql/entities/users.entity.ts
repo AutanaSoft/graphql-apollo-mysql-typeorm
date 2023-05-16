@@ -11,7 +11,7 @@ import {
 } from 'typeorm'
 import { UserToken, UsersRolesType, UsersStatusType } from '../../core/models'
 import { token_utils } from '../../core/utils'
-import { Profiles } from './Profiles'
+import { Profiles } from '@/mysql/entities/profiles.entity'
 
 @Entity()
 export class Users {

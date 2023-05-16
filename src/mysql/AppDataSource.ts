@@ -1,21 +1,22 @@
 import 'reflect-metadata'
-import { DataSource } from 'typeorm'
+import { DataSource, DataSourceOptions } from 'typeorm'
 import { MYSQL_DB, MYSQL_HOST, MYSQL_PASSWORD, MYSQL_PORT, MYSQL_USER } from '../core/environment'
-import { Profiles, Users } from './entities'
 
-const AppDataSource = new DataSource({
+const AppOptions = {
     type: 'mysql',
     host: MYSQL_HOST,
     port: MYSQL_PORT,
     username: MYSQL_USER,
     password: MYSQL_PASSWORD,
     database: MYSQL_DB,
-    entities: [Users, Profiles],
-    synchronize: true,
+    synchronize: false,
     logging: false,
+    entities: [__dirname + '/entities/**/*.{ts,js}'],
+    migrations: [__dirname + '/migrations/**/*.ts'],
     migrationsTableName: 'migrations',
-    migrations: ['migrations/**/*{.ts,.js}'],
-    subscribers: ['subscribers/**/*{.ts,.js}']
-})
+    subscribers: [__dirname + '/subscriber/**/*.ts']
+} as DataSourceOptions
+
+const AppDataSource = new DataSource(AppOptions)
 
 export default AppDataSource

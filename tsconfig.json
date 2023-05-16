@@ -19,8 +19,6 @@
         "resolveJsonModule": true,
         "forceConsistentCasingInFileNames": true,
         // new options
-        "declaration": true,
-        "declarationMap": true,
         "removeComments": true,
         // "noImplicitAny": true,
         "noImplicitReturns": true,
@@ -29,7 +27,7 @@
             "@/*": [
                 "./src/*"
             ]
-        },
+        }
     },
     "exclude": [
         "node_modules",
@@ -40,10 +38,9 @@
     ],
     "ts-node": {
         "esm": true,
-        "files": true,
         "experimentalSpecifierResolution": "node",
         "require": [
             "tsconfig-paths/register"
-        ],
+        ]
     }
 }
